@@ -148,12 +148,12 @@ inline void counter_isolates(NetCounters * counters) {
         double res = 0.0;
         
         // i is sending its first tie
-        if (Array.row(i).size() == 1u && Array.col(i).size() == 0u)
+        if (Array.row(i, false).size() == 1u && Array.col(i, false).size() == 0u)
             res -= 1.0;
         
         // j is receiving its first tie, meaning that he
         // has no other tie but i's?
-        if (Array.row(j).size() == 0u && Array.col(j).size() == 1u)
+        if (Array.row(j, false).size() == 0u && Array.col(j, false).size() == 1u)
             res -= 1.0;
         
         return res;
@@ -213,10 +213,10 @@ inline void counter_istar2(NetCounters * counters) {
         // Need to check the receiving, if he/she is getting a new set of stars
         // when looking at triads
         
-        if (Array.col(j).size() == 1u)
+        if (Array.col(j, false).size() == 1u)
             return 0.0;
         
-        return static_cast<double>(Array.col(j).size() - 1.0);
+        return static_cast<double>(Array.col(j, false).size() - 1.0);
     };
     
     counters->add_counter(tmp_count);
@@ -231,10 +231,10 @@ inline void counter_ostar2(NetCounters * counters) {
         // Need to check the receiving, if he/she is getting a new set of stars
         // when looking at triads
         
-        if (Array.row(i).size() == 1u)
+        if (Array.row(i, false).size() == 1u)
             return 0.0;
         
-        return static_cast<double>( Array.row(i).size() - 1.0);
+        return static_cast<double>( Array.row(i, false).size() - 1.0);
     };
     
     counters->add_counter(tmp_count);
@@ -254,45 +254,45 @@ inline void counter_ttriads(NetCounters * counters) {
         double ans = 0.0;
         
         // Case 1: i-j, i-k, j-k
-        if (Array.row(j).size() < Array.row(i).size()) {
+        if (Array.row(j, false).size() < Array.row(i, false).size()) {
             
-            for (auto j_row = Array.row(j).begin(); j_row != Array.row(j).end(); ++j_row) 
+            for (auto j_row = Array.row(j, false).begin(); j_row != Array.row(j, false).end(); ++j_row) 
                 if ((j != j_row->first) && (i != j_row->first) && !Array.is_empty(i, j_row->first, false))
                     ans += 1.0;
                 
         } else {
             
-            for (auto i_row = Array.row(i).begin(); i_row != Array.row(i).end(); ++i_row) 
+            for (auto i_row = Array.row(i, false).begin(); i_row != Array.row(i, false).end(); ++i_row) 
                 if ((i != i_row->first) && (i_row->first != j) && !Array.is_empty(j, i_row->first, false))
                     ans += 1.0;
                 
         }
         
         // Case 2: i-j, i-k, k-j  
-        if (Array.row(i).size() > Array.col(j).size()) {
+        if (Array.row(i, false).size() > Array.col(j, false).size()) {
             
-            for (auto j_col = Array.col(j).begin(); j_col != Array.col(j).end(); ++j_col)
+            for (auto j_col = Array.col(j, false).begin(); j_col != Array.col(j, false).end(); ++j_col)
                 if ((j != j_col->first) && (i != j_col->first) && !Array.is_empty(i, j_col->first, false))
                     ans += 1.0;
                 
         } else {
             
-            for (auto i_row = Array.row(i).begin(); i_row != Array.row(i).end(); ++i_row) 
+            for (auto i_row = Array.row(i, false).begin(); i_row != Array.row(i, false).end(); ++i_row) 
                 if ((i != i_row->first) && (j != i_row->first) && !Array.is_empty(i_row->first, j, false))
                     ans += 1.0;
                 
         }
         
         // Case 3: 
-        if (Array.col(i).size() > Array.col(j).size()) {
+        if (Array.col(i, false).size() > Array.col(j, false).size()) {
             
-            for (auto j_col = Array.col(j).begin(); j_col != Array.col(j).end(); ++j_col)
+            for (auto j_col = Array.col(j, false).begin(); j_col != Array.col(j, false).end(); ++j_col)
                 if ((j != j_col->first) && (i != j_col->first) && !Array.is_empty(j_col->first, i, false))
                     ans += 1.0;
                 
         } else {
             
-            for (auto i_col = Array.col(i).begin(); i_col != Array.col(i).end(); ++i_col) 
+            for (auto i_col = Array.col(i, false).begin(); i_col != Array.col(i, false).end(); ++i_col) 
                 if ((i != i_col->first) && (j != i_col->first) && !Array.is_empty(i_col->first, j, false))
                     ans += 1.0;
                 
@@ -326,15 +326,15 @@ inline void counter_ctriads(NetCounters * counters) {
             return 0.0;
         
         double ans = 0.0;
-        if (Array.col(i).size() < Array.row(j).size()) {
+        if (Array.col(i, false).size() < Array.row(j, false).size()) {
             
-            for (auto i_col = Array.col(i).begin(); i_col != Array.col(i).end(); ++i_col) 
+            for (auto i_col = Array.col(i, false).begin(); i_col != Array.col(i, false).end(); ++i_col) 
                 if ((i != i_col->first) && (j != i_col->first) && !Array.is_empty(j, i_col->first, false))
                     ans += 1.0;
                 
         } else {
             
-            for (auto j_row = Array.row(j).begin(); j_row != Array.row(j).end(); ++j_row) 
+            for (auto j_row = Array.row(j, false).begin(); j_row != Array.row(j, false).end(); ++j_row) 
                 if ((j != j_row->first) && (i != j_row->first) && !Array.is_empty(j_row->first, i, false))
                     ans += 1.0;
                 
@@ -379,11 +379,11 @@ inline void counter_idegree15(NetCounters * counters) {
     NETWORK_COUNTER_LAMBDA(tmp_count) {
         
         // In case of the first, we need to add
-        if (Array.col(j).size() == 1u)
+        if (Array.col(j, false).size() == 1u)
             return 1.0;
         
         return 
-            pow(static_cast<double> (Array.col(j).size()), 1.5) - pow(static_cast<double> (Array.col(j).size() - 1), 1.5)
+            pow(static_cast<double> (Array.col(j, false).size()), 1.5) - pow(static_cast<double> (Array.col(j, false).size() - 1), 1.5)
             ;
         
     };
@@ -399,11 +399,11 @@ inline void counter_odegree15(NetCounters * counters) {
     NETWORK_COUNTER_LAMBDA(tmp_count) {
         
         // In case of the first, we need to add
-        if (Array.row(i).size() == 1u)
+        if (Array.row(i, false).size() == 1u)
             return 1.0;
         
         return 
-            pow(static_cast<double>(Array.row(i).size()), 1.5) - pow(static_cast<double>(Array.row(i).size() - 1), 1.5)
+            pow(static_cast<double>(Array.row(i, false).size()), 1.5) - pow(static_cast<double>(Array.row(i, false).size() - 1), 1.5)
             ;
         
     };
@@ -607,7 +607,7 @@ inline void counter_idegree(
 
     NETWORK_COUNTER_LAMBDA(tmp_count) {
         
-        uint d = Array.col(j).size();
+        uint d = Array.col(j, false).size();
         if (d == NET_C_DATA_IDX(0u))
             return 1.0;
         else if (d == (NET_C_DATA_IDX(0u) + 1))
@@ -650,7 +650,7 @@ inline void counter_odegree(
     
     NETWORK_COUNTER_LAMBDA(tmp_count) {
         
-        uint d = Array.row(i).size();
+        uint d = Array.row(i, false).size();
         if (d == NET_C_DATA_IDX(0u))
             return 1.0;
         else if (d == (NET_C_DATA_IDX(0u) + 1))
@@ -694,7 +694,7 @@ inline void counter_degree(
     
     NETWORK_COUNTER_LAMBDA(tmp_count) {
         
-        uint d = Array.row(i).size();
+        uint d = Array.row(i, false).size();
         if (d == NET_C_DATA_IDX(0u))
             return 1.0;
         else if (d == (NET_C_DATA_IDX(0u) + 1))

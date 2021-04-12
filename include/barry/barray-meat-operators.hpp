@@ -32,7 +32,7 @@ inline BArray<Cell_Type, Data_Type>& BArray<Cell_Type, Data_Type>::operator+=(
     
     for (uint i = 0u; i < nrow(); ++i) {
         for (uint j = 0u; j < ncol(); ++j) {
-            this->operator()(i, j) += rhs.get_cell(i, j);
+            this->operator()(i, j, false) += rhs.get_cell(i, j, false);
         }
     }
 
@@ -46,7 +46,7 @@ inline BArray<Cell_Type, Data_Type>& BArray<Cell_Type, Data_Type>::operator+=(
 
     for (uint i = 0u; i < nrow(); ++i) {
         for (uint j = 0u; j < ncol(); ++j) {
-            this->operator()(i, j) += rhs;
+            this->operator()(i, j, false) += rhs;
         }
     }
 
@@ -63,7 +63,7 @@ inline BArray<Cell_Type, Data_Type>& BArray<Cell_Type, Data_Type>::operator-=(
     
     for (uint i = 0u; i < nrow(); ++i) {
         for (uint j = 0u; j < ncol(); ++j) {
-            this->operator()(i, j) -= rhs.get_cell(i, j);
+            this->operator()(i, j, false) -= rhs.get_cell(i, j,false);
         }
     }
 
@@ -77,7 +77,7 @@ inline BArray<Cell_Type, Data_Type>& BArray<Cell_Type, Data_Type>::operator-=(
 
     for (uint i = 0u; i < nrow(); ++i) {
         for (uint j = 0u; j < ncol(); ++j) {
-            this->operator()(i, j) -= rhs;
+            this->operator()(i, j, false) -= rhs;
         }
     }
 
@@ -95,7 +95,7 @@ inline BArray<Cell_Type, Data_Type>& BArray<Cell_Type, Data_Type>::operator*=(
             continue;
 
         for (auto col = ROW(i).begin(); col != ROW(i).end(); ++col) {
-            this->operator()(i, col->first) *= rhs;
+            this->operator()(i, col->first, false) *= rhs;
         }
     }
 
@@ -113,7 +113,7 @@ inline BArray<Cell_Type, Data_Type>& BArray<Cell_Type, Data_Type>::operator/=(
             continue;
 
         for (auto col = ROW(i).begin(); col != ROW(i).end(); ++col) {
-            this->operator()(i, col->first) /= rhs;
+            this->operator()(i, col->first, false) /= rhs;
         }
     }
 

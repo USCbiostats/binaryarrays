@@ -82,7 +82,7 @@ inline std::vector< std::vector<double> > Geese::predict_backend(
                 break;
             
             ++n_pos;
-            
+
         }
 
         // Iterating through the offspring state P(x_n^p | D)
@@ -143,9 +143,11 @@ inline std::vector< std::vector<double> > Geese::predict_backend(
         // Computing marginal probabilities. For this we need to integrate out
         // function by function.
         std::fill(tmp_prob.begin(), tmp_prob.end(), 0.0);
-        for (unsigned int s = 0u; s < states.size(); ++s) {
+        for (unsigned int s = 0u; s < states.size(); ++s)
+        {
         
-            for (unsigned int k = 0u; k < nfuns(); ++k) {
+            for (unsigned int k = 0u; k < nfuns(); ++k)
+            {
 
                 // If the state is true, then include it, otherwise, don't
                 if (states[s][k])
@@ -209,7 +211,8 @@ inline std::vector< std::vector<double> > Geese::predict(
         for (auto& n : nodes)
         {
 
-            if (n.second.is_leaf()) {
+            if (n.second.is_leaf())
+            {
 
                 Node & ntmp = n.second;
 

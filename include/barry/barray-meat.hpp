@@ -144,7 +144,7 @@ inline BArray<Cell_Type,Data_Type>::BArray(
     this->visited = Array_.visited;
     
     // Data
-    if (Array_.data != nullptr) {
+    if (Array_.D() != nullptr) {
 
         if (copy_data) {
 

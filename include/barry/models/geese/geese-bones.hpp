@@ -34,7 +34,7 @@ inline std::vector< double > keygen_full(
 
     // Baseline data: nrows and columns
     std::vector< double > dat = {
-        (double) array.nrow(), (double) array.ncol()
+        static_cast<double>(array.nrow()), static_cast<double>(array.ncol())
     };
 
     // State of the parent

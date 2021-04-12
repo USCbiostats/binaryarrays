@@ -17,9 +17,9 @@
  * the sufficient statitics.
  */ 
 template <
-    typename Array_Type = BArray<>,
+    typename Array_Type        = BArray<>,
     typename Data_Counter_Type = bool,
-    typename Data_Rule_Type = bool
+    typename Data_Rule_Type    = bool
     >
 class Support {
     
