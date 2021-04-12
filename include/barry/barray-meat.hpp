@@ -31,17 +31,28 @@ inline BArray< Cell_Type,Data_Type >::BArray (
     N = N_;
     M = M_;
 
-    el_ij.resize(N);
-    el_ji.resize(M);
+    if (dense_mode) 
+    {
+
+        el_dense.resize(N * M);
+
+    } else {
+
+        el_ij.resize(N);
+        el_ji.resize(M);
+
+    }
     
     
     // Writing the data
-    for (uint i = 0u; i < source.size(); ++i) {
+    for (uint i = 0u; i < source.size(); ++i)
+    {
       
         // Checking range
         bool empty = this->is_empty(source[i], target[i], true);
-        if (add && !empty) {
-            ROW(source[i])[target[i]].add(value[i]);
+        if (add && !empty)
+        {
+            this->operator()(i, j, false) += value[i];
             continue;
         } 
         
@@ -49,6 +60,7 @@ inline BArray< Cell_Type,Data_Type >::BArray (
             throw std::logic_error("The value already exists. Use 'add = true'.");
           
         this->insert_cell(source[i], target[i], value[i], false, false);
+
     }
     
     return;
@@ -75,43 +87,35 @@ inline BArray< Cell_Type,Data_Type >::BArray (
     N = N_;
     M = M_;
     
-    el_ij.resize(N);
-    el_ji.resize(M);
+    if (dense_mode) 
+    {
+
+        el_dense.resize(N * M);
+
+    } else {
+
+        el_ij.resize(N);
+        el_ji.resize(M);
+
+    }
     
     
     // Writing the data
-    for (uint i = 0u; i < source.size(); ++i) {
+    for (uint i = 0u; i < source.size(); ++i)
+    {
       
         // Checking range
         if ((source[i] >= N_) | (target[i] >= M_))
             throw std::range_error("Either source or target point to an element outside of the range by (N,M).");
         
         // Checking if it exists
-        auto search = ROW(source[i]).find(target[i]);
-        if (search != ROW(source[i]).end()) {
-            if (!add)
-                throw std::logic_error("The value already exists. Use 'add = true'.");
-          
-            // Increasing the value (this will automatically update the
-            // other value)
-            ROW(source[i])[target[i]].add(value[i]);
-            continue;
-        }
-        
-        // Adding the value and creating a pointer to it
-        ROW(source[i]).emplace(
-            std::pair<uint, Cell< Cell_Type> >(
-                target[i],
-                Cell< Cell_Type >(value[i], visited)
-            )
-        );
-        
-        COL(target[i]).emplace(
-            source[i],
-            &ROW(source[i])[target[i]]
-        );
-
-        NCells++;
+        bool not_empty = !this->is_empty(i, j, false);
+        if (add! && not_empty)
+            throw std::logic_error("The value already exists. Use 'add = true'.");
+        else if (add && not_empty)
+            this->operator()(i, j, false) += value[i];
+        else 
+            this->insert_cell(i, j, value[i], false, true);
 
     }
     
@@ -129,14 +133,26 @@ inline BArray<Cell_Type,Data_Type>::BArray(
     // el_ij.resize(N);
     // el_ji.resize(M);
     
-    std::copy(Array_.el_ij.begin(), Array_.el_ij.end(), std::back_inserter(el_ij));
-    std::copy(Array_.el_ji.begin(), Array_.el_ji.end(), std::back_inserter(el_ji));
+    if (dense_mode)
+        std::copy(Array_.el_dense.begin(), Array_.el_dense.end(), std::back_inserter(el_dense));
+    else {
+
+        std::copy(Array_.el_ij.begin(), Array_.el_ij.end(), std::back_inserter(el_ij));
+        std::copy(Array_.el_ji.begin(), Array_.el_ji.end(), std::back_inserter(el_ji));
+
+    }
 
     // Taking care of the pointers
-    for (uint i = 0u; i < N; ++i) {
+    if (!dense_mode)
+    {
 
-        for (auto& r: row(i, false))
-            COL(r.first)[i] = &ROW(i)[r.first];
+        for (uint i = 0u; i < N; ++i)
+        {
+
+            for (auto& r: row(i, false))
+                COL(r.first)[i] = &ROW(i)[r.first];
+
+        }
 
     }
 
@@ -144,9 +160,11 @@ inline BArray<Cell_Type,Data_Type>::BArray(
     this->visited = Array_.visited;
     
     // Data
-    if (Array_.D() != nullptr) {
+    if (Array_.D() != nullptr)
+    {
 
-        if (copy_data) {
+        if (copy_data)
+        {
 
             data = new Data_Type(*Array_.data);
             delete_data = true;
@@ -170,13 +188,15 @@ inline BArray<Cell_Type,Data_Type> & BArray<Cell_Type,Data_Type>::operator=(
 ) {
   
     // Clearing
-    if (this != &Array_) {
+    if (this != &Array_)
+    {
       
         this->clear(true);
         this->resize(Array_.N, Array_.M);
         
         // Entries
-        for (uint i = 0u; i < N; ++i) {
+        for (uint i = 0u; i < N; ++i)
+        {
           
             if (Array_.nnozero() == nnozero())
                 break;
@@ -187,15 +207,21 @@ inline BArray<Cell_Type,Data_Type> & BArray<Cell_Type,Data_Type>::operator=(
         }
       
         // Data
-        if (data != nullptr) {
+        if (data != nullptr)
+        {
+
             if (delete_data)
                 delete data;
             data = nullptr;
+
         }
 
-        if (Array_.data != nullptr) {
+        if (Array_.data != nullptr)
+        {
+
             data = new Data_Type(*Array_.data);
             delete_data = true;
+
         }
       
     }
@@ -243,7 +269,8 @@ inline BArray<Cell_Type,Data_Type>::BArray(
 template<typename Cell_Type, typename Data_Type>
 inline BArray<Cell_Type,Data_Type> & BArray<Cell_Type,Data_Type>::operator=(
     BArray<Cell_Type,Data_Type> && x
-) noexcept {
+) noexcept
+{
   
     // Clearing
     if (this != &x) {
@@ -283,7 +310,8 @@ inline BArray<Cell_Type,Data_Type> & BArray<Cell_Type,Data_Type>::operator=(
 template<typename Cell_Type, typename Data_Type>
 inline bool BArray<Cell_Type,Data_Type>::operator==(
     const BArray<Cell_Type,Data_Type> & Array_
-) {
+)
+{
     
     // Dimension and number of cells used
     if ((N != Array_.nrow()) | (M != Array_.ncol()) | (NCells != Array_.nnozero()))
@@ -847,6 +875,16 @@ inline void BArray<Cell_Type, Data_Type>::toggle_cell(
     }
     
     return;
+    
+}
+
+template<typename Cell_Type, typename Data_Type>
+inline void BArray<Cell_Type,Data_Type>::go_dense() {
+
+    if (dense_mode)
+        throw std::logic_error("Dense mode already on.");
+
+    dense_mode = true;
     
 }
 

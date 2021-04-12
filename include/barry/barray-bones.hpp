@@ -28,13 +28,12 @@ private:
     uint NCells = 0u;
     std::vector< Row_type< Cell_Type > > el_ij;
     std::vector< Col_type< Cell_Type > > el_ji;
+    std::vector< Cell<Cell_Type> > el_dense;
     Data_Type * data = nullptr;
     bool delete_data = false;
 
     static Cell< Cell_Type > Cell_default;
 
-public:
-    
     /** 
      * This is as a reference, if we need to iterate through the cells and we need
      * to keep track which were visited, we use this as a reference. So that if
@@ -43,8 +42,10 @@ public:
      * beginning of the routine.
      */
     bool visited = false;
-    
+    bool dense_mode = false;
 
+public:
+    
     /**
      * @name Constructors
      * 
@@ -179,7 +180,8 @@ public:
         );
     
     void toggle_cell(uint i, uint j, bool check_bounds = true, int check_exists = EXISTS::UKNOWN);
-    void toggle_lock(uint i, uint j, bool check_bounds = true);
+    // void toggle_lock(uint i, uint j, bool check_bounds = true);
+    void go_dense();
     ///@}
     
     /**@name Column/row wise interchange*/
