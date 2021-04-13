@@ -1,5 +1,4 @@
-// #include <iostream>
-// #include <string>
+#include <iostream>
 #include <vector>
 #include <unordered_map>
 #include <functional>
@@ -8,6 +7,13 @@
 #include <map>
 #include <algorithm>
 #include <utility>
+#include <random>
+#include <climits>
+#include <string>
+
+#ifdef BARRY_USE_OMP
+    #include <omp.h>
+#endif
 
 #ifndef BARRY_HPP
 #define BARRY_HPP 

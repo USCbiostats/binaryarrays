@@ -84,12 +84,12 @@ public:
  * @name Convenient typedefs for network objects.
  */
 ///@{
-typedef BArray<double, NetworkData> Network;
-typedef Counter<Network, NetCounterData > NetCounter;
-typedef Counters< Network, NetCounterData> NetCounters;
-typedef Support<Network, NetCounterData > NetSupport;
-typedef StatsCounter<Network, NetCounterData> NetStatsCounter;
-typedef Model<Network, NetCounterData> NetModel;
+typedef BArray<double,NetworkData> Network;
+typedef Counter<Network,NetCounterData> NetCounter;
+typedef Counters< Network,NetCounterData> NetCounters;
+typedef Support<Network,NetCounterData,bool,bool> NetSupport;
+typedef StatsCounter<Network,NetCounterData> NetStatsCounter;
+typedef Model<Network, NetCounterData,bool,bool> NetModel;
 typedef Rule<Network,bool> NetRule;
 typedef Rules<Network,bool> NetRules;
 ///@}

@@ -407,17 +407,21 @@ inline void Geese::print_observed_counts() {
 
         // Printing
         auto dpl = n.second.duplication ? "duplication" : "speciation";
-        std::cout << "----------\n" <<
-            "nodeid: " << n.second.id << " (" << dpl <<
-            ")\nstate : [";
+        printf("----------\n");
+        printf("nodeid: %2i (%s) ", n.second.id, dpl);
+        printf("state : [");
+        
         for (uint f = 0u; f < nfuns(); ++f)
-            std::cout << tmparray.D()->states[f] << ", ";
-        std::cout << "]; Array:" << std::endl;
+            printf("%i, ", static_cast<int>(tmparray.D()->states[f]));
+
+        printf("]; Array:\n");
+        
         tmparray.print();
-        std::cout << "Counts: ";
+
+        printf("Counts: ");
         for (auto& c : counts)
-            std::cout << c << ", ";
-        std::cout << std::endl;
+            printf("%i, ", c);
+        printf("\n");
 
     }
 

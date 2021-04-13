@@ -45,6 +45,7 @@
 #else
     #define BARRY_CHECK_SUPPORT(x, maxs)
 #endif
+
 ///@}
 
 #endif
