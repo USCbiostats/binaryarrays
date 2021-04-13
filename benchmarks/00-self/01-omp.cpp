@@ -6,8 +6,7 @@ int main() {
     using namespace barry::counters;
     network::Network a(5, 5);
 
-    a.set_data(new network::NetworkData(), true);
-    a.D()->directed = true;
+    a.set_data(new network::NetworkData({1.0, 1.5, 0.0, 2.0, 1.0}, true), true);
 
     network::NetModel netmod(1);
     
@@ -15,10 +14,11 @@ int main() {
     network::counter_edges(&netmod.counters);
     network::counter_ttriads(&netmod.counters);
     network::counter_idegree(&netmod.counters, {0});
+    network::counter_nodeicov(&netmod.counters, 0u);
 
     netmod.add_array(a);
 
-    auto params = {-.5, .5, .2};
+    auto params = {-.5, .5, .2, 2.0};
 
     auto start = std::chrono::system_clock::now();
     double ll = netmod.likelihood_total(params, true);
@@ -40,7 +40,10 @@ int main() {
         printf("Without OMP\n");
     #endif
 
-    printf("Likelihood: %.4f, duration: %.4f\n", ll, diff.count());
+    printf("Likelihood: %.4f, duration: %.6f\n", ll, diff.count());
+
+    auto z = netmod.support_fun.data.get_data(); 
+    barry::CountsType dat(z);
 
     return 0;
 
