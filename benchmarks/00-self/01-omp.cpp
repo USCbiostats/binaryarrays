@@ -42,8 +42,8 @@ int main() {
 
     printf("Likelihood: %.4f, duration: %.6f\n", ll, diff.count());
 
-    auto z = netmod.support_fun.data.get_data(); 
-    barry::CountsType dat(z);
+    // auto z = netmod.support_fun.data.get_data(); 
+    // barry::CountsType dat(z);
 
     return 0;
 

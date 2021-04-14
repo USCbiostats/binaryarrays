@@ -22,7 +22,7 @@ template <typename Cell_Type = bool, typename Data_Type = bool>
 class BArray {
     friend class BArrayCell<Cell_Type,Data_Type>;
     friend class BArrayCell_const<Cell_Type,Data_Type>;
-private:
+protected:
     uint N;
     uint M;
     uint NCells = 0u;

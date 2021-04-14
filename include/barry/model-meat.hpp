@@ -4,6 +4,37 @@
 #define BARRY_MODEL_MEAT_HPP 1
 
 template <typename Array_Type, typename Data_Counter_Type, typename Data_Rule_Type, typename Data_Rule_Dyn_Type>
+inline double Model<Array_Type,Data_Counter_Type,Data_Rule_Type,Data_Rule_Dyn_Type>::update_normalizing_constant(
+    const std::vector< double > & params,
+    const Counts_type & support
+) {
+    
+    double res = 0.0;
+    uint npars = params.size();
+    #ifdef BARRY_USE_OMP
+    #pragma omp parallel for reduction(+:res) default(none) shared(support) \
+    firstprivate(npars, params) schedule(dynamic)
+    #endif
+    for (unsigned int n = 0u; n < support.size(); ++n)
+    {
+        
+        double tmp = 0.0;
+        for (unsigned int j = 0u; j < npars; ++j)
+            tmp += support[n].first[j] * params[j];
+        
+        res += exp(tmp BARRY_SAFE_EXP) * support[n].second;
+
+    }
+    
+    // This will only evaluate if the option BARRY_CHECK_FINITE
+    // is defined
+    BARRY_ISFINITE(res)
+
+    return res;
+    
+}
+
+template <typename Array_Type, typename Data_Counter_Type, typename Data_Rule_Type, typename Data_Rule_Dyn_Type>
 inline Model<Array_Type,Data_Counter_Type,Data_Rule_Type,Data_Rule_Dyn_Type>::Model() :
     stats(0u), n_arrays_per_stats(0u), pset_arrays(0u), pset_stats(0u),
     target_stats(0u), arrays2support(0u), keys2support(0u), counters(), rules(), rules_dyn()

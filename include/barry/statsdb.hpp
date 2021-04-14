@@ -62,8 +62,8 @@ inline Counts_type FreqTable<T>::as_vector() const {
     
     Counts_type ans;
     ans.reserve(data.size());
-    for (auto iter = data.begin(); iter != data.end(); ++iter)
-        ans.push_back(*iter);
+    for (const auto& iter : data)
+        ans.push_back(iter);
     
     
     return ans;

@@ -18,4 +18,4 @@ coverage: main
 	./main.o && gcov -r main.cpp && \
 		rm catch*.hpp.gcov && \
 		mv *.hpp.gcov gcov-files/ && $(MAKE) clean
-.PHONY: clean check checkv
+.PHONY: clean check checkv main

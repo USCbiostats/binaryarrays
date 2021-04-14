@@ -353,7 +353,7 @@ inline Cell_Type BArray< Cell_Type,Data_Type >::get_cell(
         out_of_range(i,j);
     
     if (ROW(i).size() == 0u)
-        return (Cell_Type) 0.0;
+        return static_cast<Cell_Type>(0.0);
     
     // If it is not empty, then find and return
     auto search = ROW(i).find(j);
@@ -361,7 +361,7 @@ inline Cell_Type BArray< Cell_Type,Data_Type >::get_cell(
         return search->second.value;
     
     // This is if it is empty
-    return (Cell_Type) 0.0;
+    return static_cast<Cell_Type>(0.0);
     
 }
 
@@ -503,7 +503,7 @@ inline bool BArray<Cell_Type,Data_Type>::is_empty(
     else if (COL(j).size() == 0u)
         return true;
     
-    if (ROW(i).find(j) == ROW(i).end())
+    if (ROW(i).count(j) == 0u)
         return true;
     
     return false;
@@ -636,7 +636,7 @@ inline void BArray<Cell_Type, Data_Type>::insert_cell(
         }
         
         // In this case, the row exists, but we are checking that the value is empty  
-        if (ROW(i).find(j) == ROW(i).end()) {
+        if (ROW(i).count(j) == 0u) {
             
             ROW(i).insert(std::pair< uint, Cell<Cell_Type>>(j, v)); 
             COL(j).emplace(i, &ROW(i)[j]);
@@ -684,7 +684,7 @@ inline void BArray<Cell_Type, Data_Type>::insert_cell(
         }
         
         // In this case, the row exists, but we are checking that the value is empty  
-        if (ROW(i).find(j) == ROW(i).end()) {
+        if (ROW(i).count(j) == 0u) {
             
             ROW(i).insert(std::pair< uint, Cell<Cell_Type>>(j, v)); 
             COL(j).emplace(i, &ROW(i)[j]);

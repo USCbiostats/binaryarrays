@@ -13,35 +13,6 @@
  * @brief Statistical models available in `barry`.
  */
 
-inline double update_normalizing_constant(
-    const std::vector< double > & params,
-    const Counts_type & support
-) {
-    
-    double res = 0.0;
-    uint npars = params.size();
-    #ifdef BARRY_USE_OMP
-    #pragma omp parallel for reduction(+:res) default(none) shared(support) \
-    firstprivate(npars, params)
-    #endif
-    for (unsigned int n = 0u; n < support.size(); ++n)
-    {
-        
-        double tmp = 0.0;
-        for (unsigned int j = 0u; j < npars; ++j)
-            tmp += support[n].first[j] * params[j];
-        
-        res += exp(tmp BARRY_SAFE_EXP) * support[n].second;
-
-    }
-    
-    // This will only evaluate if the option BARRY_CHECK_FINITE
-    // is defined
-    BARRY_ISFINITE(res)
-
-    return res;
-    
-}
 
 inline double likelihood_(
         const std::vector< double > & target_stats,
@@ -108,6 +79,11 @@ template <
     typename Data_Rule_Dyn_Type = bool
     >
 class Model {
+private:
+    double update_normalizing_constant(
+        const std::vector< double > & params,
+        const Counts_type & stats
+    );
 
 public:
     

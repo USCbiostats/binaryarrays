@@ -95,11 +95,13 @@ inline void Support<Array_Type,Data_Counter_Type,Data_Rule_Type,Data_Rule_Dyn_Ty
     ) {
     
     // Did we reached the end??
-    if (pos >= coordinates_free.size())
-        return;
+    // if ((pos + 1u) >= coordinates_free.size())
+    //     return;
             
     // We will pass it to the next step, if the iteration makes sense.
-    calc_backend(pos + 1u, array_bank, stats_bank);
+    bool shall_we_continue = (pos + 1u) < coordinates_free.size();
+    if (shall_we_continue)
+        calc_backend(pos + 1u, array_bank, stats_bank);
     
     // Once we have returned, everything will be back as it used to be, so we
     // treat the data as if nothing has changed.
@@ -157,7 +159,8 @@ inline void Support<Array_Type,Data_Counter_Type,Data_Rule_Type,Data_Rule_Dyn_Ty
     
     // Again, we only pass it to the next level iff the next level is not
     // passed the last step.
-    calc_backend(pos + 1u, array_bank, stats_bank);
+    if(shall_we_continue)
+        calc_backend(pos + 1u, array_bank, stats_bank);
     
     // We need to restore the state of the cell
     EmptyArray.rm_cell(

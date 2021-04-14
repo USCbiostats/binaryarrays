@@ -57,7 +57,7 @@ NumericVector counter(
   
   // Initializing the Binary array, and also the the suffstats counter
   netcounters::Network Array((uint) N, (uint) M, source, target);
-  Array.set_data(new netcounters::NetworkData(gender), true)
+  Array.set_data(new netcounters::NetworkData(gender), true);
 
   // Creating the counter object; 
   netcounters::NetStatsCounter dat(&Array);
@@ -75,10 +75,8 @@ NumericVector counter(
   netcounters::counter_odegree15(dat.counters);
   netcounters::counter_nodematch(dat.counters, 0u);
   
-    // Fingers crossed
-  std::vector< double > ans = dat.count_all();
-
-  return wrap(ans);
+  // Fingers crossed
+  return wrap(dat.count_all());
   
 }
 
@@ -118,9 +116,10 @@ List support (
   
   List res(ans.size());
   for (unsigned int i = 0u; i < res.size(); ++i) {
+    const auto& a = ans[i];
     res[i] = List::create(
-      _["x"] = ans.at(i).first,
-      _["count"] = ans.at(i).second
+      _["x"]     = a.first,
+      _["count"] = a.second
     );
   }
   

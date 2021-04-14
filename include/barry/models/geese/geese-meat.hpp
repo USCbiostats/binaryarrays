@@ -420,7 +420,7 @@ inline void Geese::print_observed_counts() {
 
         printf("Counts: ");
         for (auto& c : counts)
-            printf("%i, ", c);
+            printf("%i, ", static_cast<int>(c));
         printf("\n");
 
     }
