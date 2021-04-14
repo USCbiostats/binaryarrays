@@ -57,6 +57,7 @@ public:
     bool delete_rules     = true;
     bool delete_rules_dyn = true;
     uint max_num_elements = BARRY_MAX_NUM_ELEMENTS;
+    uint number_of_stats  = 0u;
     
     // Temp variables to reduce memory allocation
     std::vector< double >                current_stats;

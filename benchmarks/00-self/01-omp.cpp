@@ -1,3 +1,4 @@
+// #include "/opt/intel/oneapi/advisor/2021.2.0/include/advisor-annotate.h"
 #include "../../include/barry/barry.hpp"
 #include <chrono>
 
@@ -24,7 +25,7 @@ int main() {
     double ll = netmod.likelihood_total(params, true);
     auto end = std::chrono::system_clock::now();
 
-    std::chrono::duration< double > diff = end - start;
+    std::chrono::duration< double, std::milli > diff = end - start;
 
     #ifdef BARRY_USE_OMP
         printf("With OMP\n");

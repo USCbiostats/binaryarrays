@@ -41,7 +41,7 @@ inline void Support<Array_Type,Data_Counter_Type,Data_Rule_Type,Data_Rule_Dyn_Ty
         for (uint n = 0u; n < counters->size(); ++n)
         {
 
-            current_stats[n] = counters->operator[](n).init(
+            current_stats[n] = counters->operator[](n)->init(
                 EmptyArray, cordfree.first, cordfree.second
                 );
 
@@ -59,6 +59,7 @@ inline void Support<Array_Type,Data_Counter_Type,Data_Rule_Type,Data_Rule_Dyn_Ty
         data.add(current_stats);
 
     change_stats.resize(coordinates_free.size(), current_stats);
+    number_of_stats = current_stats.size();
         
     if (include_it && (array_bank != nullptr)) 
         array_bank->push_back(EmptyArray);
@@ -116,15 +117,19 @@ inline void Support<Array_Type,Data_Counter_Type,Data_Rule_Type,Data_Rule_Dyn_Ty
         );
 
     // Counting
-    // std::vector< double > change_stats(counters.size());
-    for (uint n = 0u; n < counters->size(); ++n) {
-        change_stats[pos][n] = counters->operator[](n).count(
+    for (uint n = 0u; n < number_of_stats; ++n) {
+        change_stats[pos][n] = counters->operator[](n)->count(
             EmptyArray,
             cfree.first,
             cfree.second
             );
-        current_stats[n] += change_stats[pos][n];
     }
+
+    #ifdef BARRY_USE_OMP
+    #pragma omp simd
+    #endif
+    for (uint n = 0u; n < number_of_stats; ++n) 
+        current_stats[n] += change_stats[pos][n];
     
     // Adding to the overall count
     BARRY_CHECK_SUPPORT(data, max_num_elements)
@@ -169,7 +174,10 @@ inline void Support<Array_Type,Data_Counter_Type,Data_Rule_Type,Data_Rule_Dyn_Ty
         false, false
         );
     
-    for (uint n = 0u; n < counters->size(); ++n) 
+    #ifdef BARRY_USE_OMP
+    #pragma omp simd
+    #endif
+    for (uint n = 0u; n < number_of_stats; ++n) 
         current_stats[n] -= change_stats[pos][n];
     
     
@@ -337,7 +345,7 @@ inline void Support<Array_Type,Data_Counter_Type, Data_Rule_Type,Data_Rule_Dyn_T
     // Starting from the name of the stats
     printf("Position of variables:\n");
     for (uint i = 0u; i < counters->size(); ++i) {
-        printf("[%2i] %s\n", i, counters->operator[](i).name.c_str());
+        printf("[%2i] %s\n", i, counters->operator[](i)->name.c_str());
     }
 
     data.print();

@@ -11,18 +11,19 @@ inline double Model<Array_Type,Data_Counter_Type,Data_Rule_Type,Data_Rule_Dyn_Ty
     
     double res = 0.0;
     uint npars = params.size();
+    // Counts_type::iterator sup;
     #ifdef BARRY_USE_OMP
     #pragma omp parallel for reduction(+:res) default(none) shared(support) \
     firstprivate(npars, params) schedule(dynamic)
     #endif
-    for (unsigned int n = 0u; n < support.size(); ++n)
+    for (auto sup = support.begin(); sup < support.end(); sup++) 
     {
         
         double tmp = 0.0;
         for (unsigned int j = 0u; j < npars; ++j)
-            tmp += support[n].first[j] * params[j];
+            tmp += sup->first[j] * params[j];
         
-        res += exp(tmp BARRY_SAFE_EXP) * support[n].second;
+        res += exp(tmp BARRY_SAFE_EXP) * sup->second;
 
     }
     
@@ -216,19 +217,19 @@ inline void Model<Array_Type,Data_Counter_Type,Data_Rule_Type,Data_Rule_Dyn_Type
 
 template <typename Array_Type, typename Data_Counter_Type, typename Data_Rule_Type, typename Data_Rule_Dyn_Type>
 inline void Model<Array_Type,Data_Counter_Type,Data_Rule_Type,Data_Rule_Dyn_Type>::add_rule(
-    Rule<Array_Type, Data_Rule_Type> & rules
+    Rule<Array_Type, Data_Rule_Type> & rule
 ) {
     
-    rules.add_rule(rules);
+    rules.add_rule(rule);
     return;
 }
 
 template <typename Array_Type, typename Data_Counter_Type, typename Data_Rule_Type, typename Data_Rule_Dyn_Type>
 inline void Model<Array_Type,Data_Counter_Type,Data_Rule_Type,Data_Rule_Dyn_Type>::add_rule(
-    Rule<Array_Type, Data_Rule_Type> * rules
+    Rule<Array_Type, Data_Rule_Type> * rule
 ) {
     
-    rules.add_rule(rules);
+    rules.add_rule(rule);
     return;
     
 }

@@ -498,11 +498,6 @@ inline bool BArray<Cell_Type,Data_Type>::is_empty(
     if (check_bounds)
         out_of_range(i, j);
     
-    if (ROW(i).size() == 0u)
-        return true;
-    else if (COL(j).size() == 0u)
-        return true;
-    
     if (ROW(i).count(j) == 0u)
         return true;
     

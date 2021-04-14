@@ -72,7 +72,7 @@ inline void StatsCounter<Array_Type, Data_Type>::count_init(
     current_stats.resize(counters->size(), 0.0);
     // change_stats.resize(counters->size(), 0.0);
     for (uint n = 0u; n < counters->size(); ++n) 
-        current_stats[n] = counters->operator[](n).init(EmptyArray, i, j);
+        current_stats[n] = counters->operator[](n)->init(EmptyArray, i, j);
     
     return;
 }
@@ -88,7 +88,7 @@ inline void StatsCounter<Array_Type, Data_Type>::count_current(
     for (uint n = 0u; n < counters->size(); ++n) {
         // change_stats[n]   = counters->operator[](n).count(EmptyArray, i, j);
         // current_stats[n] += change_stats[n];
-        current_stats[n] += counters->operator[](n).count(EmptyArray, i, j);
+        current_stats[n] += counters->operator[](n)->count(EmptyArray, i, j);
     }
 
     return;

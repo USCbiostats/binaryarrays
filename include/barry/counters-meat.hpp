@@ -146,10 +146,10 @@ inline double Counter<Array_Type, Data_Type>::init(
 }
 
 template <typename Array_Type, typename Data_Type>
-inline Counter<Array_Type,Data_Type> &
+inline Counter<Array_Type,Data_Type> *
 Counters<Array_Type,Data_Type>::operator[](uint idx) {
 
-    return *data[idx];
+    return data[idx];
 
 }
 

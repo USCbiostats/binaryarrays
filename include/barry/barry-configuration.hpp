@@ -18,12 +18,12 @@
   * - `BARRY_CHECK_FINITE` When specified, it will introduce a macro
   */
 ///@{
-#ifdef BARRY_USE_UNORDERED_MAP
-    template<typename Ta,typename Tb>
-    using Map = std::unordered_map<Ta,Tb>;
-#else
+#ifdef BARRY_USE_MAP
     template<typename Ta,typename Tb>
     using Map = std::map<Ta,Tb>;
+#else
+    template<typename Ta,typename Tb>
+    using Map = std::unordered_map<Ta,Tb>;
 #endif
 
 #ifdef BARRY_USE_SAFE_EXP
