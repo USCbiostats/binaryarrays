@@ -11,21 +11,32 @@ inline double Model<Array_Type,Data_Counter_Type,Data_Rule_Type,Data_Rule_Dyn_Ty
     
     double res = 0.0;
     uint npars = params.size();
+    uint nsup  = support.size();
+    std::vector< double > sums(nsup, 0.0);
     // Counts_type::iterator sup;
     #ifdef BARRY_USE_OMP
-    #pragma omp parallel for reduction(+:res) default(none) shared(support) \
-    firstprivate(npars, params) schedule(dynamic)
+    #pragma omp parallel for default(none) shared(support,sums) \
+    firstprivate(npars, params, nsup) schedule(static)
     #endif
-    for (auto sup = support.begin(); sup < support.end(); sup++) 
+    for (uint i = 0u; i < nsup; ++i) 
     {
-        
-        double tmp = 0.0;
-        for (unsigned int j = 0u; j < npars; ++j)
-            tmp += sup->first[j] * params[j];
-        
-        res += exp(tmp BARRY_SAFE_EXP) * sup->second;
 
+        double totsum = 0.0;
+        #ifdef BARRY_USE_OMP
+        #pragma omp simd reduction(+:totsum)
+        #endif
+        for (uint j = 0u; j < npars; ++j)
+            totsum += support[i].first[j] * params[j];
+
+        sums[i] = totsum;
+        
     }
+
+    #ifdef BARRY_USE_OMP
+    #pragma omp simd reduction(+:res)
+    #endif 
+    for (uint i = 0u; i < nsup; ++i)
+        res = exp(sums[i] BARRY_SAFE_EXP) * support[i].second;
     
     // This will only evaluate if the option BARRY_CHECK_FINITE
     // is defined
