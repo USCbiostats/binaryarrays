@@ -3,8 +3,7 @@
 #ifndef BARRY_MODEL_MEAT_HPP 
 #define BARRY_MODEL_MEAT_HPP 1
 
-template <typename Array_Type, typename Data_Counter_Type, typename Data_Rule_Type, typename Data_Rule_Dyn_Type>
-inline double Model<Array_Type,Data_Counter_Type,Data_Rule_Type,Data_Rule_Dyn_Type>::update_normalizing_constant(
+inline double update_normalizing_constant(
     const std::vector< double > & params,
     const Counts_type & support
 ) {
@@ -15,21 +14,15 @@ inline double Model<Array_Type,Data_Counter_Type,Data_Rule_Type,Data_Rule_Dyn_Ty
     std::vector< double > sums(nsup, 0.0);
     // Counts_type::iterator sup;
     #ifdef BARRY_USE_OMP
-    #pragma omp parallel for default(none) shared(support,sums) \
-    firstprivate(npars, params, nsup) schedule(static)
+    #pragma omp parallel for simd default(none) \
+        shared(support,sums,params,npars,nsup) schedule(static)
     #endif
-    for (uint i = 0u; i < nsup; ++i) 
+    for (uint i = 0u; i < nsup; i++) 
     {
 
-        double totsum = 0.0;
-        #ifdef BARRY_USE_OMP
-        #pragma omp simd reduction(+:totsum)
-        #endif
-        for (uint j = 0u; j < npars; ++j)
-            totsum += support[i].first[j] * params[j];
-
-        sums[i] = totsum;
-        
+        for (uint j = 0u; j < npars; j++)
+            sums[i] += support[i].first[j] * params[j];
+                    
     }
 
     #ifdef BARRY_USE_OMP

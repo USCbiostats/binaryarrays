@@ -27,8 +27,12 @@ inline double likelihood_(
     double numerator=0.0;
     
     // Computing the numerator
+    #ifdef BARRY_USE_OMP
+    #pragma omp simd reduction(+:numerator)
+    #endif
     for (unsigned int j = 0u; j < target_stats.size(); ++j)
         numerator += target_stats[j] * params[j];
+        
     if (!log_)
         numerator = exp(numerator BARRY_SAFE_EXP);
     else
@@ -39,6 +43,21 @@ inline double likelihood_(
 }
 
 /**
+ * @brief Updates the normalizing constant
+ * 
+ * @details This function is to be called by `likelihood` only if the `params`
+ * differ from the last time it was called.
+ * 
+ * @param params 
+ * @param stats 
+ * @return double 
+ */
+double update_normalizing_constant(
+    const std::vector< double > & params,
+    const Counts_type & stats
+);
+
+/**
  * @brief Array Hasher class (used for computing support)
  * 
  */
@@ -46,7 +65,6 @@ template<typename Array_Type>
 inline std::vector< double > keygen_default(const Array_Type & Array_) {
     return {static_cast<double>(Array_.nrow()), static_cast<double>(Array_.ncol())};
 }
-
 
 /**
   * @ingroup stat-models
@@ -79,14 +97,9 @@ template <
     typename Data_Rule_Dyn_Type = bool
     >
 class Model {
-private:
-    double update_normalizing_constant(
-        const std::vector< double > & params,
-        const Counts_type & stats
-    );
 
 public:
-    
+   
     /**
       * @name Random number generation
       * @brief Random number generation
