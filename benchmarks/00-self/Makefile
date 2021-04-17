@@ -1,4 +1,4 @@
-CPPFLAGS = -std=c++11 -O3 -Wall -pedantic -g
+CPPFLAGS = -std=c++11 -O3 -Wall -pedantic -g 
 # icpx
 INTELCOMP = dpcpp
 all: 01-omp-pll.a 01-omp-pll.b
@@ -12,7 +12,7 @@ all: 01-omp-pll.a 01-omp-pll.b
 	$(INTELCOMP) $(CPPFLAGS) 01-omp.cpp -o 01-omp.b
 	
 01-omp-pll.a: 01-omp.cpp
-	g++ $(CPPFLAGS) -fopenmp -DBARRY_USE_OMP 01-omp.cpp -o 01-omp-pll.a -mavx2 && \
+	g++ $(CPPFLAGS) -mno-avx2 -fopenmp -DBARRY_USE_OMP 01-omp.cpp -o 01-omp-pll.a -mavx2 && \
 	g++ $(CPPFLAGS) 01-omp.cpp -o 01-omp.a 
 clean:
 	rm *.o;rm *.a;rm *.b

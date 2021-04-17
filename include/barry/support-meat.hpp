@@ -59,7 +59,6 @@ inline void Support<Array_Type,Data_Counter_Type,Data_Rule_Type,Data_Rule_Dyn_Ty
         data.add(current_stats);
 
     change_stats.resize(coordinates_free.size(), current_stats);
-    number_of_stats = current_stats.size();
         
     if (include_it && (array_bank != nullptr)) 
         array_bank->push_back(EmptyArray);
@@ -98,7 +97,7 @@ inline void Support<Array_Type,Data_Counter_Type,Data_Rule_Type,Data_Rule_Dyn_Ty
     // Did we reached the end??
     // if ((pos + 1u) >= coordinates_free.size())
     //     return;
-            
+    const unsigned int number_of_stats = current_stats.size();
     // We will pass it to the next step, if the iteration makes sense.
     bool shall_we_continue = (pos + 1u) < coordinates_free.size();
     if (shall_we_continue)

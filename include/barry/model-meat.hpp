@@ -3,21 +3,21 @@
 #ifndef BARRY_MODEL_MEAT_HPP 
 #define BARRY_MODEL_MEAT_HPP 1
 
-inline double update_normalizing_constant(
+double update_normalizing_constant(
     const std::vector< double > & params,
     const Counts_type & support
 ) {
     
     double res = 0.0;
     uint npars = params.size();
-    uint nsup  = support.size();
+    int nsup   = static_cast<int>(support.size());
     std::vector< double > sums(nsup, 0.0);
     // Counts_type::iterator sup;
     #ifdef BARRY_USE_OMP
     #pragma omp parallel for simd default(none) \
         shared(support,sums,params,npars,nsup) schedule(static)
     #endif
-    for (uint i = 0u; i < nsup; i++) 
+    for (int i = 0; i < nsup; i++) 
     {
 
         for (uint j = 0u; j < npars; j++)
@@ -28,7 +28,7 @@ inline double update_normalizing_constant(
     #ifdef BARRY_USE_OMP
     #pragma omp simd reduction(+:res)
     #endif 
-    for (uint i = 0u; i < nsup; ++i)
+    for (int i = 0; i < nsup; ++i)
         res = exp(sums[i] BARRY_SAFE_EXP) * support[i].second;
     
     // This will only evaluate if the option BARRY_CHECK_FINITE

@@ -95,9 +95,7 @@ struct vecHasher {
             return hasher(dat[0u]);
 
         std::vector< size_t > hashv(n);
-        #ifdef BARRY_USE_OMP
-        #pragma omp simd
-        #endif
+
         for (unsigned int i = 0u; i < n; ++i)
             hashv[i] = hasher(dat[i]);
 
