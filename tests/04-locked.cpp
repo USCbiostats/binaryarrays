@@ -73,8 +73,14 @@ TEST_CASE("Constrained support", "[const-support]") {
     expected.insert({{3,1,0}, 2});
 
     barry::MapVec_type<double> observed(0u);
-    for (auto iter = counts.begin(); iter != counts.end(); ++iter)
-        observed.insert({iter->first, iter->second});
+    auto ncounts = counts[0u].size();
+    for (auto i = 0u; i < ncounts; ++i) {
+        std::vector<double> tmpvec;
+        for (auto j = 0u; j < 3; ++j)
+            tmpvec.push_back(counts[j+1][i]);
+        observed.insert({tmpvec, counts[0u][i]});
+    }
+        
 
     REQUIRE(expected.size() == observed.size());
     REQUIRE(expected[{1,3,0}] == observed[{1,3,0}]);

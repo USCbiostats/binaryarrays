@@ -5,23 +5,22 @@
 
 double update_normalizing_constant(
     const std::vector< double > & params,
-    const Counts_type & support
+    const std::vector<std::vector< double >> & support
 ) {
     
     double res = 0.0;
     uint npars = params.size();
-    int nsup   = static_cast<int>(support.size());
+    int nsup   = static_cast<int>(support[0u].size());
     std::vector< double > sums(nsup, 0.0);
     // Counts_type::iterator sup;
     #ifdef BARRY_USE_OMP
     #pragma omp parallel for simd default(none) \
         shared(support,sums,params,npars,nsup) schedule(static)
     #endif
-    for (int i = 0; i < nsup; i++) 
+    for (uint j = 0u; j < npars; ++j)
     {
-
-        for (uint j = 0u; j < npars; j++)
-            sums[i] += support[i].first[j] * params[j];
+        for (int i = 0; i < nsup; ++i) 
+            sums[i] += support[j + 1u][i] * params[j];
                     
     }
 
@@ -29,7 +28,7 @@ double update_normalizing_constant(
     #pragma omp simd reduction(+:res)
     #endif 
     for (int i = 0; i < nsup; ++i)
-        res = exp(sums[i] BARRY_SAFE_EXP) * support[i].second;
+        res = exp(sums[i] BARRY_SAFE_EXP) * support[0u][i];
     
     // This will only evaluate if the option BARRY_CHECK_FINITE
     // is defined
@@ -612,11 +611,13 @@ inline void Model<Array_Type,Data_Counter_Type,Data_Rule_Type,Data_Rule_Dyn_Type
     if (i >= arrays2support.size())
         throw std::range_error("The requested support is out of range");
 
-    for (uint l = 0u; l < stats[arrays2support[i]].size(); ++l) {
+    auto suplen = stats[0u].size();
+
+    for (uint l = 0u; l < suplen; ++l) {
         printf("% 5i ", l);
-        std::cout << "counts " << stats[arrays2support[i]][l].second << " motif: ";
-        for (unsigned int k = 0u; k < stats[arrays2support[i]][l].first.size(); ++k) {
-            std::cout << stats[arrays2support[i]][l].first[k] << ", ";
+        std::cout << "counts " << stats[arrays2support[i]][0u][l] << " motif: ";
+        for (unsigned int k = 0u; k < this->nterms(); ++k) {
+            std::cout << stats[arrays2support[i]][k + 1][l] << ", ";
         }
         std::cout << std::endl;
     }

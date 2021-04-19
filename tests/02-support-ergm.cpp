@@ -57,13 +57,14 @@ TEST_CASE("Computing support for networks", "[support]") {
   support.calc(); 
   
   // Generating the entries
-  barry::Counts_type ans = support.get_counts();
+  auto ans = support.get_counts();
   
   // log(exp(p0 %*% t(ans[, -ncol(ans)])) %*% cbind(ans[,ncol(ans)]))
   std::vector< double > logs = {0.0, 0.0};
   auto nnets = 0u;
 
-  for (auto n = 0u; n < ans.size(); ++n) {
+  auto suplen = ans[0u].size();
+  for (auto n = 0u; n < suplen; ++n) {
     
     // // Printing the first 10
     // if (n < 5)
@@ -71,17 +72,17 @@ TEST_CASE("Computing support for networks", "[support]") {
     
     double tmp0 = 0.0;
     double tmp1 = 0.0;
-    nnets += ans[n].second;
+    nnets += ans[0u][n];
     
     // Now iterating through the parameters
     for (auto j = 0u; j < p0.size(); ++j) {
-      tmp0 += p0[j] * ans[n].first[j];
-      tmp1 += p1[j] * ans[n].first[j];
+      tmp0 += p0[j] * ans[j + 1][n];
+      tmp1 += p1[j] * ans[j + 1][n];
     }
     
     // Exp and weights
-    logs[0u] += exp(tmp0) * ans[n].second;
-    logs[1u] += exp(tmp1) * ans[n].second;
+    logs[0u] += exp(tmp0) * ans[0u][n];
+    logs[1u] += exp(tmp1) * ans[0u][n];
   }
   
   logs[0u] = log(logs[0u]);

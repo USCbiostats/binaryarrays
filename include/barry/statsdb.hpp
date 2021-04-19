@@ -30,9 +30,9 @@ public:
     
     void add(const std::vector< T > & x);
     
-    Counts_type                 as_vector() const;
-    MapVec_type<T,uint>         get_data() const;
-    const MapVec_type<T,uint> * get_data_ptr() const;
+    std::vector<std::vector<double>> as_vector() const;
+    MapVec_type<T,uint>              get_data() const;
+    const MapVec_type<T,uint> *      get_data_ptr() const;
     
     void clear();
     void reserve(unsigned int n);
@@ -58,13 +58,30 @@ inline void FreqTable<T>::add(const std::vector< T > & x) {
 }
 
 template<typename T>
-inline Counts_type FreqTable<T>::as_vector() const { 
+inline std::vector< std::vector<double> > FreqTable<T>::as_vector() const { 
     
-    Counts_type ans;
-    ans.reserve(data.size());
-    for (const auto& iter : data)
-        ans.push_back(iter);
+    std::vector< std::vector< double > > ans;
+    uint vlen = data.begin()->first.size();
+    ans.reserve(vlen + 1);
+
+    // Filling with the size
+    std::vector< double > tmps;
+    for (const auto iter : data)
+        tmps.push_back(iter.second);
+
+    ans.push_back(tmps);
+
+    for (auto i = 0u; i < vlen; ++i) {
     
+        // Setting up vector
+        std::vector< double > tmp;
+
+        for (const auto iter : data) 
+            tmp.push_back(iter.first[i]);
+
+        ans.push_back(tmp);
+
+    }
     
     return ans;
 }

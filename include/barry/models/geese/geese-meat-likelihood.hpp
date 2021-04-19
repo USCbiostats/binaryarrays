@@ -1,7 +1,7 @@
 #ifndef GEESE_MEAT_LIKELIHOOD_HPP
 #define GEESE_MEAT_LIKELIHOOD_HPP 1
 
-#include "geese-bones.hpp"
+// #include "geese-bones.hpp"
 
 inline double Geese::likelihood(
     const std::vector< double > & par,

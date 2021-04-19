@@ -320,7 +320,7 @@ inline void Support<Array_Type,Data_Counter_Type, Data_Rule_Type,Data_Rule_Dyn_T
 //////////////////////////
 
 template <typename Array_Type, typename Data_Counter_Type, typename Data_Rule_Type, typename Data_Rule_Dyn_Type>
-inline Counts_type Support<Array_Type,Data_Counter_Type, Data_Rule_Type,Data_Rule_Dyn_Type>::get_counts() const {
+inline std::vector< std::vector< double > > Support<Array_Type,Data_Counter_Type, Data_Rule_Type,Data_Rule_Dyn_Type>::get_counts() const {
     
     return data.as_vector(); 
     

@@ -54,7 +54,7 @@ inline double likelihood_(
  */
 double update_normalizing_constant(
     const std::vector< double > & params,
-    const Counts_type & stats
+    const std::vector<std::vector<double>> & stats
 );
 
 /**
@@ -131,8 +131,8 @@ public:
     
     
     /**@brief */
-    std::vector< Counts_type >         stats;
-    std::vector< uint >                n_arrays_per_stats;
+    std::vector< std::vector<std::vector<double>> > stats;
+    std::vector< uint > n_arrays_per_stats;
     
     /**
       * @name Container space for the powerset (and its sufficient stats)

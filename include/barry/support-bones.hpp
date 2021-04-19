@@ -163,9 +163,9 @@ public:
         unsigned int max_num_elements_ = 0u
     );
     
-    Counts_type           get_counts() const;
-    const MapVec_type<> * get_counts_ptr() const;
-    const std::vector< double > & get_current_stats() const; ///< List current statistics.
+    std::vector< std::vector< double > > get_counts() const;
+    const MapVec_type<> *                get_counts_ptr() const;
+    const std::vector< double > &        get_current_stats() const; ///< List current statistics.
     void print() const;
     
 };
