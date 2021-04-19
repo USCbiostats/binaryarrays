@@ -12,23 +12,26 @@ double update_normalizing_constant(
     uint npars = params.size();
     int nsup   = static_cast<int>(support[0u].size());
     std::vector< double > sums(nsup, 0.0);
-    // Counts_type::iterator sup;
-    #ifdef BARRY_USE_OMP
-    #pragma omp parallel for simd default(none) \
-        shared(support,sums,params,npars,nsup) schedule(static)
-    #endif
+    
     for (uint j = 0u; j < npars; ++j)
     {
+
+        const std::vector< double > & sup_ptr = support[j + 1u];
+        const double parj = params[j];
+        #ifdef BARRY_USE_OMP
+        #pragma omp parallel for simd default(none) \
+        shared(sup_ptr,sums,nsup) schedule(static) firstprivate(parj)
+        #endif
         for (int i = 0; i < nsup; ++i) 
-            sums[i] += support[j + 1u][i] * params[j];
+            sums[i] += sup_ptr[i] * parj;
                     
     }
 
-    #ifdef BARRY_USE_OMP
+    /*#ifdef BARRY_USE_OMP
     #pragma omp simd reduction(+:res)
-    #endif 
+    #endif*/ 
     for (int i = 0; i < nsup; ++i)
-        res = exp(sums[i] BARRY_SAFE_EXP) * support[0u][i];
+        res += exp(sums[i] BARRY_SAFE_EXP) * support[0u][i];
     
     // This will only evaluate if the option BARRY_CHECK_FINITE
     // is defined
